@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+    <style>
+        #canvas1 {
+            width: 600px;
+            height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <canvas id="canvas1"></canvas>
+    <canvas id="canvas2" width="600" height="300"></canvas>
+</body>
+<script>
+    let canvas1 = document.getElementById('canvas1');
+    let canvas2 = document.getElementById('canvas2');
+
+    let context1 = canvas1.getContext('2d');
+    let context2 = canvas2.getContext('2d');
+
+    context1.font = '38pt Arial';
+    context1.fillStyle = 'cornflowerblue';
+    context1.strokeStyle = 'blue';
+    context1.fillText('Hello Canvas', canvas1.width/2-150, canvas1.height/2+15);
+    context1.strokeText("Hello Canvas", canvas1.width/2-150, canvas1.height/2+15);
+
+    context2.font = '38pt Arial';
+    context2.fillStyle = 'cornflowerblue';
+    context2.strokeStyle = 'blue';
+    context2.fillText('Hello Canvas', canvas2.width/2-150, canvas2.height/2+15);
+    context2.strokeText("Hello Canvas", canvas2.width/2-150, canvas2.height/2+15);
+
+</script>
+</html>
