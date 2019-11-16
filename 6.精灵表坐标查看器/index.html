@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+    <style>
+        body {
+            background: #dddddd;
+        }
+        #canvas {
+            position: absolute;
+            left: 0px;
+            top: 50px;
+            margin: 20px;
+            background: #ffffff;
+            border: thin inset rgba(100, 150, 230, 0.5);
+            cursor: pointer;
+        }
+        #readout {
+            margin-top: 10px;
+            margin-left: 15px;
+            color: blue;
+        }
+    </style>
+<body>
+    <div id="readout"></div>
+    <p>加载一个图片，移动鼠标，获取基于 canvas 鼠标处精灵表坐标</p>
+    <canvas id="canvas" width="500" height="250"></canvas>
+</body>
+<script>
+    let canvas = document.getElementById('canvas');
+    let context = canvas.getContext("2d");
+    let readout = document.getElementById("readout");
+    let spritesheet = new Image();
+    // 窗口坐标转 canvas 坐标
+    function windowToCanvas(canvas, x, y) {
+        let bbox = canvas.getBoundingClientRect();
+        return {
+            x: x - bbox.left*(canvas.width/bbox.width),
+            y: y - bbox.top*(canvas.height/bbox.height)
+        }
+    }
+    // 绘制背景条纹线
+    function drawBackground() {
+        let VerticalLineSoacing = 12;
+        let i = context.canvas.height
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        context.strokeStyle = 'lightgray';
+        context.lineWidth = 0.5;
+        // 预留位置给图片
+        while(i > VerticalLineSoacing * 4) {
+            context.beginPath();
+            context.moveTo(0, i);
+            context.lineTo(canvas.width, i);
+            context.stroke();
+            i -= VerticalLineSoacing
+        }
+    }
+    // 绘制精灵表
+    function drawSpritesheet() {
+        context.drawImage(spritesheet, 0, 0);
+    }
+    spritesheet.src='./running-sprite-sheet.png';
+    spritesheet.onload = function(ev) {
+        drawSpritesheet();
+    }
+    // 绘制光标跟随网线
+    function drawGuidelines(x, y) {
+        context.strokeStyle="rgba(0, 0, 230, 0.8)";
+        context.textWidth = 0.5;
+        drawVerticalLine(x);
+        drawHorizontalLine(y);
+    }
+    function drawVerticalLine(x) {
+        context.beginPath();
+        context.moveTo(x+0.5, 0);
+        context.lineTo(x+0.5, context.canvas.height);
+        context.stroke();
+    }
+    function drawHorizontalLine(y) {
+        context.beginPath();
+        context.moveTo(0, y+0.5);
+        context.lineTo(context.canvas.width,  y+0.5);
+        context.stroke();
+    }
+    // 更新 dom
+    function updateReadout(x, y) {
+        readout.innerHTML='('+x.toFixed(0)+','+y.toFixed(0)+')';
+    }
+    canvas.onmousemove = function(e) {
+        console.log(e);
+        var loc = windowToCanvas(canvas, e.clientX, e.clientY);
+
+        drawBackground();
+        drawSpritesheet();
+        drawGuidelines(loc.x, loc.y);
+        updateReadout(loc.x, loc.y);
+    }
+    drawBackground();
+</script>
+</html>

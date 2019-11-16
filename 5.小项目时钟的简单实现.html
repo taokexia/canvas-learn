@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>小时钟项目</title>
+</head>
+<body>
+    <canvas id="canvas" width="500" height="500"></canvas>
+</body>
+<script>
+    let canvas = document.getElementById('canvas');
+    let context = canvas.getContext("2d");
+
+    let FontHeight = 15;
+    let Margin = 35;
+    let Radius = canvas.width/2 - Margin;
+    let HandTruncation = canvas.width/25;
+    let HourHandTruncation = canvas.width/10; // 时针截断长度
+    let NumberSpacing = 20; // 数字空隙
+    let HandRadius = Radius + NumberSpacing; // 指针全长度
+    // 绘制圆形
+    function drawCircle() {
+        context.beginPath();
+        context.arc(canvas.width/2, canvas.height/2, Radius, 0, Math.PI*2, true);
+        context.stroke();
+    }
+    // 绘制数字
+    function drawNumerals() {
+        let numerals = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+        let angle = 0;
+        let numeralWidth = 0;
+
+        numerals.forEach((i) => {
+            angle = Math.PI/6 * (i - 3);
+            numeralWidth = context.measureText(i).width;
+            context.fillText(i, canvas.width/2 + Math.cos(angle)*HandRadius-numeralWidth/2
+                , canvas.height/2+Math.sin(angle)*HandRadius+FontHeight/2);
+        });
+    }
+    // 绘制时钟中心实心圆
+    function drawCenter() {
+        context.beginPath();
+        context.arc(canvas.width/2, canvas.height/2, 5, 0, Math.PI*2, true);
+        context.fill();
+    }
+    // 绘制指针通用方法
+    function drawHand(loc, isHour) {
+        let angle = (Math.PI*2)*(loc/60) - Math.PI/2;
+        let handRadius = isHour ? Radius - HandTruncation - HourHandTruncation
+            : Radius - HandTruncation;
+        context.moveTo(canvas.width/2, canvas.height/2);
+        context.lineTo(canvas.width/2+Math.cos(angle)*handRadius,
+            canvas.height/2+Math.sin(angle)*handRadius);
+        context.stroke();
+    }
+    // 绘制表针
+    function drawHands() {
+        let date = new Date;
+        let hour = date.getHours();
+        hour = hour > 12 ? hour-12 : hour
+
+        drawHand(hour*5 + (date.getMinutes()/60)*5, true);
+        drawHand(date.getMinutes(), false);
+        drawHand(date.getSeconds(), false);
+    }
+    // 绘制组件
+    function drawClock() {
+        context.clearRect(0, 0, canvas.width, canvas.height);
+        drawCircle();
+        drawNumerals();
+        drawCenter();
+        drawHands();
+    }
+    context.font = FontHeight + 'pt Arial';
+    setInterval(drawClock, 1000);
+</script>
+</html>

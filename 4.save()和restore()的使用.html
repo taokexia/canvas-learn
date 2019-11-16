@@ -12,12 +12,12 @@
 <script>
     let canvas = document.getElementById('canvas');
     let ctx = canvas.getContext("2d");
-    ctx.fillStyle = "red";
-    ctx.save();
-    ctx.fillStyle = 'skyblue';
+    ctx.fillStyle = "red"; //往样式容器里添加一个红色样式
+    ctx.save();  //往样式栈里添加一个红色样式
+    ctx.fillStyle = 'skyblue'; //覆盖样式容器里的样式，此时样式容器里的颜色变成蓝色
     ctx.beginPath();
     ctx.fillRect(50, 50, 100, 100);
-    ctx.restore();
+    ctx.restore(); //把样式栈里的红色放到样式容器中，此时蓝色被覆盖成红色
     ctx.beginPath();
     ctx.fillRect(100, 100, 100, 100);
 </script>
